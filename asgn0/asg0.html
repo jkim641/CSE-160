@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Draw a blue rectangle (canvas version)</title>
+  </head>
+
+  <body onload="main()">
+    <canvas id="asmt0-canvas" width="400" height="400">
+      Please use a browser that supports "canvas"
+    </canvas>
+    
+    <!--webGL Library-->
+    <script src="lib/cuon-matrix-cse160.js"></script>
+
+    <!--Assignment 0 javascript-->
+    <script src="asg0.js"></script>
+
+    <!--interface vector 1 and 2-->
+    <br>
+
+    <label>v1: x</label>
+    <input type="text" id="x1_coordinate" value="0">
+
+    <label>, y</label>
+    <input type="text" id="y1_coordinate" value="0">
+
+    <br><br>
+
+    <label>v2: x</label>
+    <input type="text" id="x2_coordinate" value="0">
+
+    <label>, y</label>
+    <input type="text" id="y2_coordinate" value="0">
+
+    <br><br>
+
+    <button onclick="handleDrawEvent()">Draw</button>
+
+    <!--operation and select options and scalar-->
+    <br><br>
+
+    <label for="op"> Matrix Operations: </label>
+    <select id="op">
+      <option value="">--Choose an Operation!--
+    </option>
+      <option value="Add">Add</option>
+      <option value="Sub">Subtract</option>
+      <option value="Mul">Multiply</option>
+      <option value="Div">Divide</option>
+      <option value="Mag">Magnitude</option>
+      <option value="Norm">Normalize</option>
+      <option value="Ang">Angle between</option>
+      <option value="Tri">Area of the Triangle</option>
+    </select>
+
+    <label>Scalar:</label>
+    <input type="text" id="scalar" value="0">
+
+    <button onclick="handleDrawOperationEvent()">Draw Operation</button>
+
+    <br><br>
+    <br><br>
+
+    Jinho Kim
+    <br>
+    jkim641@ucsc.edu
+    <br><br>
+
+    Notes to The Grader:
+    <br>
+    Got some help from LLM, brother, and some research on javascript coding(ex. math operations).
+
+
+
+  </body>
+</html>
