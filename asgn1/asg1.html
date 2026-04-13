@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 1: Painting, Jinho Kim</title>
+
+  <style>
+    body {
+      font-family: "Helvetica", Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body onload="main()">
+
+  <div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div>
+
+      <!-- canvas -->
+      <canvas id="asmt1-canvas" width="400" height="400"></canvas>
+
+      <br><br>
+
+      <!-- color text box --------------------------------------------------------------->
+      <div style="
+        width: 375px;
+        border: 2px solid #dd642c;
+        padding: 10px;
+        background-color: #ffdeca;
+        border-radius: 10px;
+      ">
+        <h3>Color 🌈</h3>
+
+        <!--Color Button -->
+        <button id="green">Green</button>
+        <button id="red">Red</button>
+
+        <br><br>
+
+        <!--Color Slider-->
+        Red <input type="range" min="0" max="100" value="100" id="slideR"><br>
+        Green <input type="range" min="0" max="100" value="100" id="slideG"><br>
+        Blue <input type="range" min="0" max="100" value="100" id="slideB"><br>
+
+        <br>
+
+        <!--Awesomeness Add on: Color Preview-->
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span>Preview:</span>
+          <div id="colorPreview" style="
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgb(255, 255, 255);
+            background-color: rgb(255,255,255);
+          "></div>
+        </div>
+      </div>
+
+      <br>
+
+      <!-- Eraser Box ----------------------------------------------------------------------->
+      <div style="
+        width: 375px;
+        border: 2px solid #fdc837;
+        padding: 10px;
+        background-color: #fff6d7;
+        border-radius: 10px;
+      ">
+        <h3>Erase / Clear 🗑️</h3>
+        
+        <!--clear-->
+        <button id="clearB">Clear</button>
+
+        <!--Awesomeness Add on: Eraser-->
+        <button id="eraserB">Eraser</button>
+
+        <br><br>
+
+        <!--Awesomeness Add on: Eraser Size-->
+        Eraser Size<br>
+        <input type="range" min="5" max="50" value="10" id="eraserSize">
+        
+        <br><br>
+        <b>Note:</b><br>
+        Make sure you choose the shape again to go back to painting mode!
+      </div>
+
+      <br>
+
+      <!-- Shape Box---------------------------------------------------------------------------->
+      <div style="
+        width: 375px;
+        border: 2px solid #349d30;
+        padding: 10px;
+        background-color: #c8ffc7;
+        border-radius: 10px;
+      ">
+        <h3>Shape 📐</h3>
+
+        <!--Shape Butoon-->
+        <button id="pointB">Point</button>
+        <button id="triangleB">Triangle</button>
+        <button id="circleB">Circle</button>
+
+        <br><br>
+
+        <!--Size Slider-->
+        Size<br>
+        <input type="range" min="4" max="40" value="10" id="slideSize">
+
+        <br><br>
+
+        <!--Circle Segments Slider-->
+        Circle Segments<br>
+        <input type="range" min="3" max="20" value="10" id="slideSeg">
+      </div>
+
+    </div>
+
+    <!-- My Reference Drawing and Info -->
+    <div style="
+      width: 300px;
+      border: 2px solid rgb(170, 43, 72);
+      padding: 10px;
+      background-color: #ffe9e9;
+      border-radius: 10px;
+    ">
+      <h3>Reference Image 🎨</h3>
+
+      <p><b>Name:</b> Jinho Kim</p>
+      <p><b>Email:</b> jkim641@ucsc.edu</p>
+
+      <img src="myDrawing.png" style="width: 100%; border-radius: 8px;">
+
+      <br><br>
+      <!--My Drawing-->
+      Click this to see my drawing!: 
+      <br>
+      <button id="drawB">Show My Drawing!</button>
+      
+      <br><br>
+
+      <!--Awesomeness add-on-->
+      Previous Step of My Drawing!: 
+      <br>
+      <button id="undoB">Undo</button>
+
+
+      
+      <p>
+        <b>Info:</b></br>
+        <ul>
+          <li>CSE 160 - Painting Program for Assignment 1.</li>
+        </ul>
+      </p>
+
+      <p>
+        <b>Awesomeness Add-Ons:</b><br>
+        <ul>
+          <li>Live Color Preview System.</li>
+          <li>Eraser Tool and size.</li>
+          <li>Undo Button to see the my drawing progress.</li>
+        </ul>
+      </p>
+
+      <p>
+        <b>Notes for Grader:</b><br>
+        <ul>
+          <li>Most helps from lab videos, Professor videos, LLM, and internet research on painting programs.</li>
+        </ul>
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="lib/webgl-utils.js"></script>
+  <script src="lib/webgl-debug.js"></script>
+  <script src="lib/cuon-utils.js"></script>
+
+  <script src="asg1.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Circle.js"></script>
+
+</body>
+
+</html>
