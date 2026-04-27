@@ -1000,18 +1000,32 @@ function updateAnimationAngles()
 }
 
 //rotate animal
+let g_shiftHeld = false;
+document.addEventListener('keydown', function(ev) { if (ev.key === 'Shift') g_shiftHeld = true;  });
+document.addEventListener('keyup',   function(ev) { if (ev.key === 'Shift') g_shiftHeld = false; });
+
+function triggerPokeAnimation() {
+  if (g_sleepState === 'idle') {
+    g_sleepState = 'falling';
+    g_sleepStart = g_seconds;
+    g_yellowAnimation = false;
+  }
+}
+
 function addMouseControl() {
   canvas.addEventListener('mousedown', function(ev) {
-    if (ev.shiftKey) {
-      if (g_sleepState === 'idle') {
-        g_sleepState = 'falling';
-        g_sleepStart = g_seconds;
-        g_yellowAnimation = false;
-      }
+    if (ev.shiftKey || g_shiftHeld) {
+      triggerPokeAnimation();
     } else {
       g_isDragging = true;
       g_lastMouseX = ev.clientX;
       g_lastMouseY = ev.clientY;
+    }
+  });
+
+  canvas.addEventListener('click', function(ev) {
+    if (ev.shiftKey || g_shiftHeld) {
+      triggerPokeAnimation();
     }
   });
 
@@ -1187,8 +1201,3 @@ function drawZzzParticles() {
     zb.render();
   }
 }
-
-
-
-
-
