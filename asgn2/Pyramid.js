@@ -8,7 +8,7 @@ class Pyramid {
     gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
     var r = this.color;
 
-    // ── Front face ──
+    //front
     gl.uniform4f(u_FragColor, r[0], r[1], r[2], r[3]);
     drawTriangle3D([
       -0.5, 0.0,  0.5,
@@ -16,7 +16,7 @@ class Pyramid {
        0.0, 1.0,  0.0
     ]);
 
-    // ── Back face ──
+    //back
     gl.uniform4f(u_FragColor, r[0]*0.85, r[1]*0.85, r[2]*0.85, r[3]);
     drawTriangle3D([
        0.5, 0.0, -0.5,
@@ -24,7 +24,7 @@ class Pyramid {
        0.0, 1.0,  0.0
     ]);
 
-    // ── Left face ──
+    //back
     gl.uniform4f(u_FragColor, r[0]*0.75, r[1]*0.75, r[2]*0.75, r[3]);
     drawTriangle3D([
       -0.5, 0.0, -0.5,
@@ -32,7 +32,7 @@ class Pyramid {
        0.0, 1.0,  0.0
     ]);
 
-    // ── Right face ──
+    // right
     gl.uniform4f(u_FragColor, r[0]*0.70, r[1]*0.70, r[2]*0.70, r[3]);
     drawTriangle3D([
        0.5, 0.0,  0.5,
@@ -40,7 +40,7 @@ class Pyramid {
        0.0, 1.0,  0.0
     ]);
 
-    // ── Bottom face ──
+    // bottom
     gl.uniform4f(u_FragColor, r[0]*0.5, r[1]*0.5, r[2]*0.5, r[3]);
     drawTriangle3D([
       -0.5, 0.0,  0.5,

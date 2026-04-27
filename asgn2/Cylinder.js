@@ -6,12 +6,12 @@ class Cylinder {
   }
 
   render() {
-    // Apply matrix
+    //matrix
     gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
 
     let n = this.segments;
 
-    // Color variations
+    //color
     let sideColor = this.color;
     let topColor = [
       this.color[0] * 1.2,
@@ -35,7 +35,7 @@ class Cylinder {
       let x2 = Math.cos(angle2) * 0.5;
       let z2 = Math.sin(angle2) * 0.5;
 
-      // ── Bottom cap (darker) ──
+      //bottom
       gl.uniform4f(u_FragColor, bottomColor[0], bottomColor[1], bottomColor[2], bottomColor[3]);
       drawTriangle3D([
         0,  -0.5,  0,
@@ -43,7 +43,7 @@ class Cylinder {
         x1, -0.5, z1
       ]);
 
-      // ── Side quad (normal color) ──
+      //side
       gl.uniform4f(u_FragColor, sideColor[0], sideColor[1], sideColor[2], sideColor[3]);
 
       drawTriangle3D([
@@ -58,7 +58,7 @@ class Cylinder {
         x2, -0.5, z2
       ]);
 
-      // ── Top cap (lighter) ──
+      //top
       gl.uniform4f(u_FragColor, topColor[0], topColor[1], topColor[2], topColor[3]);
       drawTriangle3D([
         0,   0.5, 0,

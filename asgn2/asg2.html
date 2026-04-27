@@ -19,49 +19,80 @@
 
   <span id="fps-counter">FPS: --</span>
 
-  <br><br>
+  <br>
 
   <!--Camera Angle-->
+  <h3>Camera Angles Set</h3>
   Camera Angle <input type="range" min="-180" max="180" value="5" id="slideAng">
   Vertical Angle <input type="range" min="-180" max="180" value="0" id="slideAngV">
   <button type="button" id="resetCamera">Optimal View</button>
 
   <br><br>
 
-  <h3>Camera Angles Set</h3>
   <button type="button" id="frontCamera">Front</button>
   <button type="button" id="backCamera">Back</button>
   <button type="button" id="rightCamera">Right</button>
   <button type="button" id="leftCamera">Left</button>
 
-  <br><br>
 
   <!--animation on and off-->
+  <h3>Animation On and OFF</h3>
   <button type="button" id="yellowAniOn">ON</button>
   <button type="button" id="yellowAniOff">OFF</button>
+  
+  <br><br>Note: Hold Shift + Click to View Special Animation
+
+  <div style="display: flex; gap: 40px;">
+
+  <div>
+    <h3>Right Leg</h3>
+    Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegR"><br>
+    Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegR"><br>
+    Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetR"><br>
+  </div>
+
+  <div>
+    <h3>Left Leg</h3>
+    Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegL"><br>
+    Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegL"><br>
+    Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetL"><br>
+  </div>
+
+  </div>
+
+  <div style="display: flex; gap: 40px;">
+
+  <div>
+    <h3>Right Arm</h3>
+    Upper <input type="range" id="slideUpperArmR" min="-90" max="90" value="0"><br>
+    Lower <input type="range" id="slideLowerArmR" min="-90" max="90" value="0"><br>
+    Hand  <input type="range" id="slideHandR" min="-90" max="90" value="0"><br>
+  </div>
+
+  <div>
+    <h3>Left Arm</h3>
+    Upper <input type="range" id="slideUpperArmL" min="-90" max="90" value="0"><br>
+    Lower <input type="range" id="slideLowerArmL" min="-90" max="90" value="0"><br>
+    Hand  <input type="range" id="slideHandL" min="-90" max="90" value="0"><br>
+  </div>
+
+  </div>
 
   <br><br>
-  <h3>Right Leg</h3>
-  Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegR"><br>
-  Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegR"><br>
-  Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetR"><br>
-
-  <h3>Left Leg</h3>
-  Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegL"><br>
-  Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegL"><br>
-  Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetL"><br>
-
+  <b>-------------------------------------------------------------------------------------------------------------------------</b>
+  <br><br>
+  <b>Name:</b> Jinho Kim
   <br>
+  <b>Email:</b> jkim641@ucsc.edu
 
-  <h3>Right Arm</h3>
-  Upper <input type="range" id="slideUpperArmR" min="-90" max="90" value="0"><br>
-  Lower <input type="range" id="slideLowerArmR" min="-90" max="90" value="0"><br>
-  Hand  <input type="range" id="slideHandR" min="-90" max="90" value="0"><br>
+  <br><br>
+  <b>Notes to The Grader:</b>
+  <br>
+  - My animal was Koala! Most helps were from lab and professor's tutorial video, LLM, and used some codes from Assignment 1.
 
-  <h3>Left Arm</h3>
-  Upper <input type="range" id="slideUpperArmL" min="-90" max="90" value="0"><br>
-  Lower <input type="range" id="slideLowerArmL" min="-90" max="90" value="0"><br>
-  Hand  <input type="range" id="slideHandL" min="-90" max="90" value="0"><br>
+  <br><br>
+
+
 
   <!-- SCRIPTS -->
   <script src="lib/webgl-utils.js"></script>

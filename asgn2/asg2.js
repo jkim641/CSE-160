@@ -49,6 +49,12 @@ let g_headAngle = 0;
 let g_earTwitch = 0;
 let g_lastTwitchTime = 0;
 
+let g_sleepState   = 'idle';
+let g_sleepStart   = 0;   
+let g_bodyTilt     = 0;    
+let g_bodyTiltY    = 0;    
+let g_logHeight = -0.3;
+
 //rotate animal
 let g_isDragging = false;
 let g_lastMouseX = 0;
@@ -206,14 +212,12 @@ function renderScene()
   const pink       = [0.95, 0.60, 0.70, 1.0];  
   const darkBrown  = [0.20, 0.12, 0.05, 1.0];  
 
-  // ─── HEAD ─────────────────────────────────────────────────────
-  // ─── HEAD PIVOT MATRIX ────────────────────────────────────────
+  // head -----------------------------------
   var headMat = new Matrix4();
   headMat.translate(0, 0.5, 0);
   headMat.rotate(g_headAngle, 0, 1, 0);
   headMat.translate(0, -0.5, 0);
 
-  // ─── HEAD ─────────────────────────────────────────────────────
   var head = new Cube();
   head.color = gray;
   head.matrix = new Matrix4(headMat);
@@ -298,33 +302,49 @@ function renderScene()
   nose.matrix.scale(0.1, 0.15, 0.1);
   nose.render();
 
+  let eyeScaleY = 1.0;
+  if (g_sleepState === 'sleeping') {
+    eyeScaleY = 0.1;
+  } else if (g_sleepState === 'falling' || g_sleepState === 'waking') {
+    let t = easeInOut(clamp01((g_seconds - g_sleepStart) / 0.7));
+    eyeScaleY = (g_sleepState === 'falling') ? (1 - t * 0.9) : (0.1 + t * 0.9);
+  }
+
+  // eyes
+  // Left Eye
   var eye = new Cube();
   eye.color = black;
   eye.matrix = new Matrix4(headMat);
   eye.matrix.translate(-0.14, 0.45, -0.26);
-  eye.matrix.scale(0.05, 0.05, 0.05);
+  eye.matrix.scale(0.05, 0.05 * eyeScaleY, 0.05);
   eye.render();
 
-  var eyew = new Cube();
-  eyew.color = white;
-  eyew.matrix = new Matrix4(headMat);
-  eyew.matrix.translate(-0.13, 0.472, -0.27);
-  eyew.matrix.scale(0.015, 0.015, 0.05);
-  eyew.render();
+  // Only draw white highlight if eyes are open
+  if (eyeScaleY > 0.5) {
+    var eyew = new Cube();
+    eyew.color = white;
+    eyew.matrix = new Matrix4(headMat);
+    eyew.matrix.translate(-0.13, 0.472, -0.27);
+    eyew.matrix.scale(0.015, 0.015, 0.05);
+    eyew.render();
+  }
 
+  // Right Eye
   var eye2 = new Cube();
   eye2.color = black;
   eye2.matrix = new Matrix4(headMat);
   eye2.matrix.translate(0.09, 0.45, -0.26);
-  eye2.matrix.scale(0.05, 0.05, 0.05);
+  eye2.matrix.scale(0.05, 0.05 * eyeScaleY, 0.05); 
   eye2.render();
 
-  var eye2w = new Cube();
-  eye2w.color = white;
-  eye2w.matrix = new Matrix4(headMat);
-  eye2w.matrix.translate(0.10, 0.472, -0.27);
-  eye2w.matrix.scale(0.015, 0.015, 0.05);
-  eye2w.render();
+  if (eyeScaleY > 0.5) {
+    var eye2w = new Cube();
+    eye2w.color = white;
+    eye2w.matrix = new Matrix4(headMat);
+    eye2w.matrix.translate(0.10, 0.472, -0.27);
+    eye2w.matrix.scale(0.015, 0.015, 0.05);
+    eye2w.render();
+  }
 
   var face4 = new Cube();
   face4.color = slightgray;
@@ -348,7 +368,7 @@ function renderScene()
   mouthbottom.matrix.scale(0.1, 0.1, 0.07);
   mouthbottom.render();
 
-  // ─── RIGHT EAR ────────────────────────────────────────────────
+  //right ear
   var rightear = new Cube();
   rightear.color = gray;
   rightear.matrix = new Matrix4(headMat);
@@ -435,10 +455,10 @@ function renderScene()
   rightear6.matrix.scale(0.15, 0.05, 0.1);
   rightear6.render();
 
-  // ─── LEFT EAR ─────────────────────────────────────────────────
+  // left ear
   var leftear = new Cube();
   leftear.color = gray;
-  leftear.matrix = new Matrix4(headMat); // Inherit from head
+  leftear.matrix = new Matrix4(headMat); 
   leftear.matrix.translate(-0.07, 0.64, -0.025); 
   leftear.matrix.rotate(45, 0, 0, 1);           
   leftear.matrix.scale(-0.05, 0.25, 0.1);       
@@ -446,14 +466,14 @@ function renderScene()
 
   var leftear2 = new Cube();
   leftear2.color = gray;
-  leftear2.matrix = new Matrix4(headMat); // Inherit from head
+  leftear2.matrix = new Matrix4(headMat); 
   leftear2.matrix.translate(-0.225, 0.73, -0.025);
   leftear2.matrix.scale(-0.15, 0.05, 0.1);
   leftear2.render();
 
   var leftear3 = new Cube();
   leftear3.color = gray;
-  leftear3.matrix = new Matrix4(headMat); // Inherit from head
+  leftear3.matrix = new Matrix4(headMat);
   leftear3.matrix.translate(-0.325, 0.73, -0.025);
   leftear3.matrix.rotate(60, 0, 0, 1);          
   leftear3.matrix.scale(-0.13, 0.05, 0.1);
@@ -461,69 +481,69 @@ function renderScene()
 
   var earinl = new Cube();
   earinl.color = pink;
-  earinl.matrix = new Matrix4(headMat); // Inherit from head
+  earinl.matrix = new Matrix4(headMat);
   earinl.matrix.translate(-0.20, 0.52, 0.01);
   earinl.matrix.scale(-0.15, 0.25, 0.05);
   earinl.render();
 
   var earinl2 = new Cube();
   earinl2.color = pink;
-  earinl2.matrix = new Matrix4(headMat); // Inherit from head
+  earinl2.matrix = new Matrix4(headMat); 
   earinl2.matrix.translate(-0.345, 0.55, 0.01);
   earinl2.matrix.scale(-0.05, 0.15, 0.05);
   earinl2.render();
 
   var earinl3 = new Cube();
   earinl3.color = white;
-  earinl3.matrix = new Matrix4(headMat); // Inherit from head
+  earinl3.matrix = new Matrix4(headMat); 
   earinl3.matrix.translate(-0.20, 0.52, -0.01);
   earinl3.matrix.scale(-0.08, 0.17, 0.06);
   earinl3.render();
 
   var earinl4 = new Cube();
   earinl4.color = white;
-  earinl4.matrix = new Matrix4(headMat); // Inherit from head
+  earinl4.matrix = new Matrix4(headMat); 
   earinl4.matrix.translate(-0.26, 0.52, -0.01);
   earinl4.matrix.scale(-0.08, 0.13, 0.06);
   earinl4.render();
 
   var earinl5 = new Cube();
   earinl5.color = white;
-  earinl5.matrix = new Matrix4(headMat); // Inherit from head
+  earinl5.matrix = new Matrix4(headMat); 
   earinl5.matrix.translate(-0.26, 0.52, -0.01);
   earinl5.matrix.scale(-0.1, 0.09, 0.06);
   earinl5.render();
 
   var earinl6 = new Cube();
   earinl6.color = white;
-  earinl6.matrix = new Matrix4(headMat); // Inherit from head
+  earinl6.matrix = new Matrix4(headMat); 
   earinl6.matrix.translate(-0.26, 0.55, -0.01);
   earinl6.matrix.scale(-0.12, 0.03, 0.06);
   earinl6.render();
 
   var leftear4 = new Cube();
   leftear4.color = gray;
-  leftear4.matrix = new Matrix4(headMat); // Inherit from head
+  leftear4.matrix = new Matrix4(headMat); 
   leftear4.matrix.translate(-0.2, 0.52, 0.04);
   leftear4.matrix.scale(-0.17, 0.23, 0.05);
   leftear4.render();
 
   var leftear5 = new Cube();
   leftear5.color = gray;
-  leftear5.matrix = new Matrix4(headMat); // Inherit from head
+  leftear5.matrix = new Matrix4(headMat); 
   leftear5.matrix.translate(-0.2, 0.52, 0.04);
   leftear5.matrix.scale(-0.21, 0.13, 0.05);
   leftear5.render();
 
   var leftear6 = new Cube();
   leftear6.color = gray;
-  leftear6.matrix = new Matrix4(headMat); // Inherit from head
+  leftear6.matrix = new Matrix4(headMat); 
   leftear6.matrix.translate(-0.225, 0.47, 0);
   leftear6.matrix.scale(-0.15, 0.05, 0.1);
   leftear6.render();
 
 
-  // ─── BODY ─────────────────────────────────────────────────────
+  // body
   var body = new Cube();
   body.color = gray;
   body.matrix.translate(-0.16, -0.03, -0.1);
@@ -588,7 +608,7 @@ function renderScene()
   belly5.matrix.scale(0.35, 0.06, 0.3);
   belly5.render();
 
-  //right leg ----------------------------------------------------------------------------------------------------------
+  //right leg
   var upperlegr = new Cube();
   upperlegr.color = slightgray;
   upperlegr.matrix.translate(0.2, -0.28, 0.23);
@@ -622,7 +642,7 @@ function renderScene()
   feetr.matrix.scale(0.13, 0.1, 0.19);
   feetr.render();
 
-  //right arm ----------------------------------------------------------------------------------------------------------
+  //right arm
   var upperarmr = new Cube();
   upperarmr.color = slightgray;
   upperarmr.matrix.translate(0.15, 0.03, -0.03);
@@ -734,8 +754,8 @@ function renderScene()
   //green grass platform----------------------------------------------------------------------------------------------
   var platform = new Cylinder(40);
   platform.color = [0.25, 0.75, 0.25, 1.0];
-  platform.matrix.translate(0, -0.35, 0);      
-  platform.matrix.scale(1.8, 0.08, 1.8);       
+  platform.matrix.translate(0, -0.6, 0);      
+  platform.matrix.scale(1.8, 0.54, 1.8);       
   platform.render();
 
   // grass
@@ -791,6 +811,27 @@ function renderScene()
   g7.matrix.rotate(20, 0, 1, 0);
   g7.matrix.scale(0.06, 0.18, 0.05);
   g7.render();
+
+  if (g_sleepState !== 'idle') {
+    //main log body
+    var log = new Cylinder(20);
+    log.color = [0.38, 0.22, 0.08, 1.0]; // warm wood brown
+    log.matrix.translate(0, g_logHeight, -0.3);
+    log.matrix.rotate(0, 0, 0, 1);
+    log.matrix.scale(0.30, 0.645, 0.30);  // taller (0.55 vs 0.25)
+    log.render();
+
+    //top part of the log
+    var logTop = new Cylinder(20);
+    logTop.color = [0.58, 0.38, 0.18, 1.0]; // lighter cut-wood face
+    logTop.matrix.translate(0, g_logHeight + 0.27, -0.3);
+    logTop.matrix.rotate(0, 0, 0, 1);
+    logTop.matrix.scale(0.25, 0.12, 0.25);
+    logTop.render();
+
+  }
+
+  drawZzzParticles();
 
 }
 //----------------------------------------------------------------------------------------------------------------------------------------
@@ -911,6 +952,7 @@ function tick()
   document.getElementById('fps-counter').textContent = 'FPS: ' + fps;
 
   updateAnimationAngles();
+  updateSleepAnimation();
 
   renderScene();
   requestAnimationFrame(tick);
@@ -923,7 +965,6 @@ function updateAnimationAngles()
     // head swishes left and right slowly
     g_headAngle = 18 * Math.sin(g_seconds * 1.0);
 
-    // ear twitches every 3 seconds - quick flick then back
     let timeSinceTwitch = g_seconds - g_lastTwitchTime;
     if (timeSinceTwitch > 3.0) {
       g_lastTwitchTime = g_seconds;
@@ -935,7 +976,7 @@ function updateAnimationAngles()
     }
 
     const wave = g_seconds * 2.0;
-    const phaseShift = 0.6; // radians of delay between each segment
+    const phaseShift = 0.6; 
 
     g_upperArmRAngle =  30 * Math.sin(wave);
     g_lowerArmRAngle =  25 * Math.sin(wave - phaseShift);
@@ -961,7 +1002,13 @@ function updateAnimationAngles()
 //rotate animal
 function addMouseControl() {
   canvas.addEventListener('mousedown', function(ev) {
-    if (!ev.shiftKey) {  // leave shift-click free for poke animation later
+    if (ev.shiftKey) {
+      if (g_sleepState === 'idle') {
+        g_sleepState = 'falling';
+        g_sleepStart = g_seconds;
+        g_yellowAnimation = false;
+      }
+    } else {
       g_isDragging = true;
       g_lastMouseX = ev.clientX;
       g_lastMouseY = ev.clientY;
@@ -972,18 +1019,173 @@ function addMouseControl() {
     if (!g_isDragging) return;
     let dx = ev.clientX - g_lastMouseX;
     let dy = ev.clientY - g_lastMouseY;
-    g_globalAngle  -= dx * 0.5;   // horizontal drag → Y rotation
-    g_globalAngleV -= dy * 0.5;   // vertical drag   → X rotation
+    g_globalAngle  -= dx * 0.5;  
+    g_globalAngleV -= dy * 0.5;  
     g_lastMouseX = ev.clientX;
     g_lastMouseY = ev.clientY;
 
-    // sync sliders
     document.getElementById('slideAng').value  = g_globalAngle;
     document.getElementById('slideAngV').value = g_globalAngleV;
   });
 
   canvas.addEventListener('mouseup',    function() { g_isDragging = false; });
   canvas.addEventListener('mouseleave', function() { g_isDragging = false; });
+}
+
+//poke animation
+function easeInOut(t) { return t * t * (3 - 2 * t); }
+function clamp01(t)   { return Math.max(0, Math.min(1, t)); }
+
+function updateSleepAnimation() {
+  if (g_sleepState === 'idle') return;
+
+  let elapsed = g_seconds - g_sleepStart;
+
+  if (g_sleepState === 'falling') {
+    let t = easeInOut(clamp01(elapsed / 0.7));
+
+    // body tilt
+    g_bodyTilt  = -90 * t;
+    g_bodyTiltY =  20 * t;
+
+    //log
+    g_logHeight = -0.75 + 0.75 * t;
+    if (g_logHeight > 0.1) g_logHeight = 0.1;
+
+    //leg
+    g_upperLegRAngle =  30 * t;
+    g_upperLegLAngle =  30 * t;
+    g_lowerLegRAngle = -20 * t;
+    g_lowerLegLAngle = -20 * t;
+
+    //arm
+    g_upperArmRAngle = 20;
+    g_upperArmLAngle = 20;
+
+    g_lowerArmRAngle = 40;
+    g_lowerArmLAngle = 40;
+
+    g_handRAngle = 20;
+    g_handLAngle = 20;
+
+    g_headAngle = 0;
+
+    if (elapsed > 0.7) {
+      g_sleepState = 'sleeping';
+      g_sleepStart = g_seconds;
+    }
+
+  } else if (g_sleepState === 'sleeping') {
+    g_bodyTilt  = -90;
+    g_bodyTiltY =  20;
+
+    const wave = Math.sin(g_seconds * 2.5);
+
+    g_upperArmRAngle = 20 + 3 * wave;
+    g_upperArmLAngle = 20 + 3 * wave;
+
+    g_lowerArmRAngle = 40 + 2 * wave;
+    g_lowerArmLAngle = 40 + 2 * wave;
+
+    g_handRAngle = 20 + 1 * wave;
+    g_handLAngle = 20 + 1 * wave;
+
+    if (elapsed > 4.0) {
+      g_sleepState = 'waking';
+      g_sleepStart = g_seconds;
+    }
+
+  } else if (g_sleepState === 'waking') {
+    let t = easeInOut(clamp01(elapsed / 0.7));
+
+   
+    g_bodyTilt  = -90 * (1 - t);
+    g_bodyTiltY =  20 * (1 - t);
+
+    
+    g_upperLegRAngle =  30 * (1 - t);
+    g_upperLegLAngle =  30 * (1 - t);
+    g_lowerLegRAngle = -20 * (1 - t);
+    g_lowerLegLAngle = -20 * (1 - t);
+
+   
+    g_upperArmRAngle = 20 * (1 - t);
+    g_upperArmLAngle = 20 * (1 - t);
+
+    g_lowerArmRAngle = 40 * (1 - t);
+    g_lowerArmLAngle = 40 * (1 - t);
+
+    g_handRAngle = 20 * (1 - t);
+    g_handLAngle = 20 * (1 - t);
+
+    
+    g_logHeight = 0.1 * (1 - t) - 0.55 * t;
+
+    if (elapsed > 0.7) {
+      g_sleepState  = 'idle';
+      g_bodyTilt    = 0;
+      g_bodyTiltY   = 0;
+
+      g_upperLegRAngle = g_upperLegLAngle = 0;
+      g_lowerLegRAngle = g_lowerLegLAngle = 0;
+
+      g_upperArmRAngle = g_upperArmLAngle = 0;
+      g_lowerArmRAngle = g_lowerArmLAngle = 0;
+      g_handRAngle     = g_handLAngle     = 0;
+
+      g_logHeight = -0.65;
+    }
+  }
+}
+
+//sleeping ZZZ
+function drawZzzParticles() {
+  if (g_sleepState !== 'sleeping') return;
+
+  let elapsed = g_seconds - g_sleepStart;
+  const blue = [0.3, 0.55, 1.0, 1.0];
+
+  
+  const zDefs = [
+    { delay: 0.0,  xOff:  0.15, xSide: -0.05 },
+    { delay: 1.3,  xOff:  0.28, xSide:  0.0  },
+    { delay: 2.6,  xOff:  0.18, xSide: -0.08 },
+  ];
+
+  for (let i = 0; i < zDefs.length; i++) {
+    let z = zDefs[i];
+    let t = ((elapsed - z.delay) % 4.0) / 3.5;
+    if (t < 0) continue;
+    t = clamp01(t);
+
+   
+    let yBase =  0.85 + t * 0.55;  
+    let xBase = -0.05 + z.xOff + t * z.xSide;
+    let zBase = -0.15;
+
+    let scale  = 0.04 + 0.03 * (1 - t);   
+    let alpha  = t < 0.7 ? 1.0 : 1.0 - (t - 0.7) / 0.3; 
+    let zColor = [0.3, 0.55, 1.0, alpha];
+
+    let zt = new Cube();
+    zt.color = zColor;
+    zt.matrix.translate(xBase, yBase + scale * 2, zBase);
+    zt.matrix.scale(scale * 3, scale * 0.6, scale * 0.4);
+    zt.render();
+
+    let zm = new Cube();
+    zm.color = zColor;
+    zm.matrix.translate(xBase + scale * 0.2, yBase + scale * 0.8, zBase);
+    zm.matrix.rotate(-45, 0, 0, 1);
+    zm.matrix.scale(scale * 0.6, scale * 2.2, scale * 0.4);
+    zm.render();
+
+    let zb = new Cube();
+    zb.color = zColor;
+    zb.matrix.translate(xBase, yBase, zBase);
+    zb.matrix.scale(scale * 3, scale * 0.6, scale * 0.4);
+    zb.render();
+  }
 }
 
 
