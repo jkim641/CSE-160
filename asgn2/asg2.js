@@ -1014,7 +1014,9 @@ function triggerPokeAnimation() {
 
 function addMouseControl() {
   canvas.addEventListener('mousedown', function(ev) {
-    if (ev.shiftKey || g_shiftHeld) {
+    canvas.focus(); 
+
+    if (ev.shiftKey) {
       triggerPokeAnimation();
     } else {
       g_isDragging = true;
@@ -1024,7 +1026,7 @@ function addMouseControl() {
   });
 
   canvas.addEventListener('click', function(ev) {
-    if (ev.shiftKey || g_shiftHeld) {
+    if (ev.shiftKey) {
       triggerPokeAnimation();
     }
   });
@@ -1033,8 +1035,10 @@ function addMouseControl() {
     if (!g_isDragging) return;
     let dx = ev.clientX - g_lastMouseX;
     let dy = ev.clientY - g_lastMouseY;
-    g_globalAngle  -= dx * 0.5;  
-    g_globalAngleV -= dy * 0.5;  
+
+    g_globalAngle  -= dx * 0.5;
+    g_globalAngleV -= dy * 0.5;
+
     g_lastMouseX = ev.clientX;
     g_lastMouseY = ev.clientY;
 
