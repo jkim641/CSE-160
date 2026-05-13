@@ -71,6 +71,17 @@ class Cube
         drawTriangle3DUV([0,0,0, 1,1,0, 1,0,0], [0,0, 1,1, 1,0]);
         drawTriangle3DUV([0,0,0, 0,1,0, 1,1,0], [0,0, 0,1, 1,1]);
 
+        if (this.textureNum == 9)
+        {
+            // chocolate block top = pink frosting
+            gl.uniform1i(u_whichTexture, -2);
+            gl.uniform4f(u_FragColor, 0.60, 0.40, 0.20, 1.0);
+        }
+        else
+        {
+            gl.uniform1i(u_whichTexture, this.textureNum);
+        }
+
         // back
         drawTriangle3DUV([0,0,1, 1,0,1, 1,1,1], [0,0, 1,0, 1,1]);
         drawTriangle3DUV([0,0,1, 1,1,1, 0,1,1], [0,0, 1,1, 0,1]);
@@ -87,6 +98,15 @@ class Cube
             gl.uniform1i(u_whichTexture, -2);
             gl.uniform4f(u_FragColor, 0.15, 0.56, 0.95, 1.0);
         }
+        else if (this.textureNum == 7)
+        {
+            gl.uniform1i(u_whichTexture, 8);
+        }
+        else if (this.textureNum == 9)
+        {
+            gl.uniform1i(u_whichTexture, -2);
+            gl.uniform4f(u_FragColor, 0.60, 0.40, 0.20, 1.0);
+        }
         else
         {
             gl.uniform1i(u_whichTexture, this.textureNum);
@@ -102,6 +122,11 @@ class Cube
             gl.uniform1i(u_whichTexture, -2);
             gl.uniform4f(u_FragColor, 0.91, 0.53, 0.56, 1.0);
         }
+        else if (this.textureNum == 9)
+        {
+            gl.uniform1i(u_whichTexture, -2);
+            gl.uniform4f(u_FragColor, 0.60, 0.40, 0.20, 1.0);
+        }
         else
         {
             gl.uniform1i(u_whichTexture, this.textureNum);
@@ -111,12 +136,32 @@ class Cube
         drawTriangle3DUV([0,0,0, 0,0,1, 1,0,1], [0,0, 0,1, 1,1]);
 
         // right
-        gl.uniform1i(u_whichTexture, this.textureNum);
+        if (this.textureNum == 9)
+        {
+            // chocolate block top = pink frosting
+            gl.uniform1i(u_whichTexture, -2);
+            gl.uniform4f(u_FragColor, 0.60, 0.40, 0.20, 1.0);
+        }
+        else
+        {
+            gl.uniform1i(u_whichTexture, this.textureNum);
+        }
+
         drawTriangle3DUV([1,0,0, 1,1,1, 1,1,0], [0,0, 1,1, 0,1]);
         drawTriangle3DUV([1,0,0, 1,0,1, 1,1,1], [0,0, 1,0, 1,1]);
 
         //left
-        gl.uniform1i(u_whichTexture, this.textureNum);
+        if (this.textureNum == 9)
+        {
+            // chocolate block top = pink frosting
+            gl.uniform1i(u_whichTexture, -2);
+            gl.uniform4f(u_FragColor, 0.60, 0.40, 0.20, 1.0);
+        }
+        else
+        {
+            gl.uniform1i(u_whichTexture, this.textureNum);
+        }
+
         drawTriangle3DUV([0,0,0, 0,1,0, 0,1,1], [0,0, 0,1, 1,1]);
         drawTriangle3DUV([0,0,0, 0,1,1, 0,0,1], [0,0, 1,1, 1,0]);
 

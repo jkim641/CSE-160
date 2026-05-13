@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Assignment 3: Blocky World, Jinho Kim</title>
+  <link rel="icon" href="data:,">
 
   <style>
     body {
@@ -22,20 +23,20 @@
 
   <br>
 
-  <!--Camera Angle-->
-  <h3>Camera Angles Set</h3>
-  Camera Angle <input type="range" min="-180" max="180" value="5" id="slideAng">
-  Vertical Angle <input type="range" min="-180" max="180" value="0" id="slideAngV">
-  <button type="button" id="resetCamera">Optimal View</button>
+
+  </div>
 
   <br><br>
+  <div id="win-message" style="display:none; position:fixed; top:50%; left:50%; 
+    transform:translate(-50%,-50%); background:pink; padding:30px; 
+    font-size:36px; border-radius:10px; text-align:center; z-index:100;">
+    🎂 Cake Complete! 🎂<br>
+    <button onclick="resetWorld()">Play Again</button>
+  </div>
 
-  <button type="button" id="frontCamera">Front</button>
-  <button type="button" id="backCamera">Back</button>
-  <button type="button" id="rightCamera">Right</button>
-  <button type="button" id="leftCamera">Left</button>
-
-
+  <div id="block-selector" style="position:fixed; bottom:20px; left:20px; 
+    color:white; font-size:20px; background:rgba(0,0,0,0.5); padding:10px; border-radius:5px;">
+    Selected: Cake Bread
   </div>
 
   <br><br>

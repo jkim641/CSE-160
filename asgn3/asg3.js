@@ -21,6 +21,11 @@ var FSHADER_SOURCE =
   'uniform sampler2D u_Sampler2;\n' +
   'uniform sampler2D u_Sampler3;\n' +
   'uniform sampler2D u_Sampler4;\n' +
+  'uniform sampler2D u_Sampler5;\n' +
+  'uniform sampler2D u_Sampler6;\n' +
+  'uniform sampler2D u_Sampler7;\n' +
+  'uniform sampler2D u_Sampler8;\n' +
+  'uniform sampler2D u_Sampler9;\n' +
   'uniform int u_whichTexture;\n' +
   'varying vec2 v_UV;\n' +
   'void main() {\n' +
@@ -52,6 +57,27 @@ var FSHADER_SOURCE =
   '    gl_FragColor = texture2D(u_Sampler4, v_UV);\n' +
   '  }\n' +
 
+  '  else if (u_whichTexture == 5) {\n' +
+  '    gl_FragColor = texture2D(u_Sampler5, v_UV);\n' +
+  '  }\n' +
+
+  '  else if (u_whichTexture == 6) {\n' +
+  '    gl_FragColor = texture2D(u_Sampler6, v_UV);\n' +
+  '  }\n' +
+
+  '  else if (u_whichTexture == 7) {\n' +
+  '    gl_FragColor = texture2D(u_Sampler7, v_UV);\n' +
+  '  }\n' +
+
+  '  else if (u_whichTexture == 8) {\n' +
+  '    gl_FragColor = texture2D(u_Sampler8, v_UV);\n' +
+  '  }\n' +
+
+  '  else if (u_whichTexture == 9) {\n' +
+  '    gl_FragColor = texture2D(u_Sampler9, v_UV);\n' +
+  '  }\n' +
+
+
   '  else {\n' +
   '    gl_FragColor = vec4(1.0, 0.2, 0.2, 1.0);\n' +
   '  }\n' +
@@ -74,6 +100,20 @@ let u_Sampler2;
 let u_Sampler3;
 //sky
 let u_Sampler4;
+let g_winAudio = null;
+
+//extra
+let u_Sampler5;
+let u_Sampler6;
+let u_Sampler7;
+let u_Sampler8;
+let u_Sampler9;
+let g_selectedBlock = 5;
+let g_typeMap = Array.from(
+    {length:32},
+    () => Array.from({length:32}, () => [])
+);
+let g_originalTypeMap = Array.from({length:32}, () => Array(32).fill(0));
 
 let u_ModelMatrix;
 let u_GlobalRotateMatrix;
@@ -253,6 +293,42 @@ function connectVariablesToGLSL()
     return;
   }
 
+  u_Sampler5 = gl.getUniformLocation(gl.program, 'u_Sampler5');
+
+  if (!u_Sampler5) {
+    console.log('Failed to get the storage location of u_Sampler5');
+    return;
+  }
+
+  u_Sampler6 = gl.getUniformLocation(gl.program, 'u_Sampler6');
+
+  if (!u_Sampler6) {
+    console.log('Failed to get the storage location of u_Sampler6');
+    return;
+  }
+
+  u_Sampler7 = gl.getUniformLocation(gl.program, 'u_Sampler7');
+
+  if (!u_Sampler7) {
+    console.log('Failed to get the storage location of u_Sampler7');
+    return;
+  }
+
+  u_Sampler8 = gl.getUniformLocation(gl.program, 'u_Sampler8');
+
+  if (!u_Sampler8) {
+    console.log('Failed to get the storage location of u_Sampler8');
+    return;
+  }
+
+  u_Sampler9 = gl.getUniformLocation(gl.program, 'u_Sampler9');
+
+  if (!u_Sampler9) {
+    console.log('Failed to get the storage location of u_Sampler9');
+    return;
+  }
+
+
   //texture or color
   u_whichTexture = gl.getUniformLocation(gl.program, 'u_whichTexture');
 
@@ -337,53 +413,29 @@ var g_map = [
 let g_originalMap = JSON.parse(JSON.stringify(g_map));
 
 function buildMap() {
+    g_walls = [];
+    for (let x = 0; x < g_map.length; x++) {
+        for (let z = 0; z < g_map[x].length; z++) {
+            let height = g_map[x][z];
+            for (let y = 0; y < height; y++) {
+                let wall = new Cube();
 
-  g_walls = [];
+                if (x == 0 || x == g_map.length-1 || z == 0 || z == g_map[x].length-1) {
+                    wall.textureNum = 3;
+                } else if (x >= 6 && x <= 13 && z >= 17 && z <= 24) {
+                    // steel
+                    let t = g_typeMap[x][z][y];
+                    wall.textureNum = t ? t : 2;
+                } else {
+                    let t = g_typeMap[x][z][y];
+                    wall.textureNum = t ? t : 1;
+                }
 
-  for (let x = 0; x < g_map.length; x++) {
-
-    for (let z = 0; z < g_map[x].length; z++) {
-
-        let height = g_map[x][z];
-
-        for (let y = 0; y < height; y++) {
-
-            let wall = new Cube();
-
-            // border walls
-            if (
-                x == 0 || x == g_map.length - 1 ||
-                z == 0 || z == g_map[x].length - 1
-            )
-            {
-                wall.textureNum = 3;
+                wall.matrix.translate(x - 16, y - 0.75, z - 16);
+                g_walls.push(wall);
             }
-
-            // steel area
-            else if (
-                x >= 6 && x <= 13 &&
-                z >= 17 && z <= 24
-            )
-            {
-                wall.textureNum = 2;
-            }
-
-            // normal chocolate blocks
-            else
-            {
-                wall.textureNum = 1;
-            }
-
-            wall.matrix.translate(
-                x - 16,
-                y - 0.75,
-                z - 16
-            );
-
-            g_walls.push(wall);
         }
     }
-  }
 }
 
 function getBlockInFront()
@@ -403,71 +455,59 @@ function getBlockInFront()
     return [x, z];
 }
 
-function addBlock()
-{
+function addBlock() {
+
     let pos = getBlockInFront();
 
     let x = pos[0];
-
     let z = pos[1];
 
-    if (x < 0 || x >= 32 || z < 0 || z >= 32)
-    {
-        return;
-    }
+    if (x < 0 || x >= 32 || z < 0 || z >= 32) return;
 
-    if (
-    x == 0 || x == 31 ||
-    z == 0 || z == 31
-    )
-    {
-        return;
-    }
+    let y = g_map[x][z];
+
+    g_typeMap[x][z][y] = g_selectedBlock;
 
     g_map[x][z]++;
 
     buildMap();
 
+    checkRecipe();
+
     g_keys[70] = false;
 }
 
-function removeBlock()
-{
+function removeBlock() {
     let pos = getBlockInFront();
-
     let x = pos[0];
-
     let z = pos[1];
 
-    if (x < 0 || x >= 32 || z < 0 || z >= 32)
-    {
-        return;
-    }
+    if (x < 0 || x >= 32 || z < 0 || z >= 32) return;
+    if (x == 0 || x == 31 || z == 0 || z == 31) return;
 
-    // don't delete border walls
-    if (
-    x == 0 || x == 31 ||
-    z == 0 || z == 31
-    )
-    {
-        return;
-    }
+    if (g_map[x][z] > 0) {
 
-    if (g_map[x][z] > 0)
-    {
-        g_map[x][z]--;
+      let topY = g_map[x][z] - 1;
+
+      g_typeMap[x][z][topY] = undefined;
+
+      g_map[x][z]--;
     }
 
     buildMap();
-
     g_keys[71] = false;
 }
 
-function resetWorld()
-{
+function resetWorld() {
+    if (g_winAudio) {
+        g_winAudio.pause();
+        g_winAudio.currentTime = 0;
+        g_winAudio = null;
+    }
     g_map = JSON.parse(JSON.stringify(g_originalMap));
-
+    g_typeMap = Array.from({length:32}, () => Array.from({length:32}, () => []));
     buildMap();
+    document.getElementById('win-message').style.display = 'none';
 }
 
 function drawMap() {
@@ -536,7 +576,7 @@ function renderScene()
 
   // sign board
   var signBoard = new Cube();
-  signBoard.textureNum = -2;
+  signBoard.textureNum = 9;
   signBoard.color = [0.60, 0.40, 0.20, 1.0];
 
   signBoard.matrix.translate(-3.56, 0.1, 0.4);
@@ -551,61 +591,6 @@ function renderScene()
 //HTML UI (Part 4, Part 5)
 function addActionsForHtmlUI()
 {
-
-  //asg 2 angle slider
-  document.getElementById('slideAng').addEventListener('mousemove', function() { g_globalAngle = this.value; renderScene();});
-  document.getElementById('slideAngV').addEventListener('mousemove', function() { g_globalAngleV = this.value; renderScene(); });
-
-  //reset camera angle
-  document.getElementById('resetCamera').onclick = function() 
-  {
-    g_globalAngle = 23;
-    g_globalAngleV = -5;
-    
-    document.getElementById('slideAng').value = 23;
-    document.getElementById('slideAngV').value = -5;
-    renderScene();
-  };
-
-  document.getElementById('frontCamera').onclick = function() 
-  {
-    g_globalAngle = 0;
-    g_globalAngleV = 0;
-    
-    document.getElementById('slideAng').value = 0;
-    document.getElementById('slideAngV').value = 0;
-    renderScene();
-  };
-
-  document.getElementById('backCamera').onclick = function() 
-  {
-    g_globalAngle = 180;
-    g_globalAngleV = 0;
-    
-    document.getElementById('slideAng').value = 180;
-    document.getElementById('slideAngV').value = 0;
-    renderScene();
-  };
-
-  document.getElementById('rightCamera').onclick = function() 
-  {
-    g_globalAngle = 90;
-    g_globalAngleV = 0;
-    
-    document.getElementById('slideAng').value = 90;
-    document.getElementById('slideAngV').value = 0;
-    renderScene();
-  };
-
-  document.getElementById('leftCamera').onclick = function() 
-  {
-    g_globalAngle = -90;
-    g_globalAngleV = 0;
-    
-    document.getElementById('slideAng').value = -90;
-    document.getElementById('slideAngV').value = 0;
-    renderScene();
-  };
 
   document.getElementById('resetWorld').onclick = function()
   {
@@ -657,6 +642,11 @@ function initTextures() {
     let image2 = new Image();
     let image3 = new Image();
     let image4 = new Image();
+    let image5 = new Image();
+    let image6 = new Image();
+    let image7 = new Image();
+    let image8 = new Image();
+    let image9 = new Image();
 
     image0.onload = function() {
         sendTextureToGLSL(image0, 0);
@@ -678,6 +668,26 @@ function initTextures() {
         sendTextureToGLSL(image4, 4);
     };
 
+    image5.onload = function() {
+        sendTextureToGLSL(image5, 5);
+    };
+
+    image6.onload = function() {
+        sendTextureToGLSL(image6, 6);
+    };
+
+    image7.onload = function() {
+        sendTextureToGLSL(image7, 7);
+    };
+
+    image8.onload = function() {
+        sendTextureToGLSL(image8, 8);
+    };
+
+    image9.onload = function() {
+        sendTextureToGLSL(image9, 9);
+    };
+
     image0.src = 'icecreamfloor.jpg';
 
     image1.src = 'candyblock.jpg';
@@ -687,6 +697,12 @@ function initTextures() {
     image3.src = 'wall.jpg';
 
     image4.src = 'candysky.jpg';
+
+    image5.src = 'bread.jpg';
+    image6.src = 'cream.jpg';
+    image7.src = 'straw1.jpg';
+    image8.src = 'straw2.jpg';
+    image9.src = 'cakerecipe.jpg';
 }
 
 //load texture
@@ -712,9 +728,29 @@ function sendTextureToGLSL(image, textureUnit)
     {
         gl.activeTexture(gl.TEXTURE3);
     }
-    else 
+    else if (textureUnit == 4)
     {
         gl.activeTexture(gl.TEXTURE4);
+    }
+    else if (textureUnit == 5)
+    {
+        gl.activeTexture(gl.TEXTURE5);
+    }
+    else if (textureUnit == 6)
+    {
+        gl.activeTexture(gl.TEXTURE6);
+    }
+    else if (textureUnit == 7)
+    {
+        gl.activeTexture(gl.TEXTURE7);
+    }
+    else if (textureUnit == 8)
+    {
+        gl.activeTexture(gl.TEXTURE8);
+    }
+    else 
+    {
+        gl.activeTexture(gl.TEXTURE9);
     }
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -761,9 +797,29 @@ function sendTextureToGLSL(image, textureUnit)
     {
         gl.uniform1i(u_Sampler3, 3);
     }
-    else
+    else if (textureUnit == 4)
     {
         gl.uniform1i(u_Sampler4, 4);
+    }
+    else if (textureUnit == 5)
+    {
+        gl.uniform1i(u_Sampler5, 5);
+    }
+    else if (textureUnit == 6)
+    {
+        gl.uniform1i(u_Sampler6, 6);
+    }
+    else if (textureUnit == 7)
+    {
+        gl.uniform1i(u_Sampler7, 7);
+    }
+    else if (textureUnit == 8)
+    {
+        gl.uniform1i(u_Sampler8, 8);
+    }
+    else
+    {
+        gl.uniform1i(u_Sampler9, 9);
     }
 }
 
@@ -796,6 +852,66 @@ function tick()
     if (g_keys[70]) { addBlock(); }     // F
     if (g_keys[71]) { removeBlock(); }  // G
 
+    if (g_keys[49]) { g_selectedBlock = 5; updateBlockSelector(); } // 1
+    if (g_keys[50]) { g_selectedBlock = 6; updateBlockSelector(); } // 2
+    if (g_keys[51]) { g_selectedBlock = 7; updateBlockSelector(); } // 3
+    if (g_keys[52]) { g_selectedBlock = 1; updateBlockSelector(); } // 4
+
+    function updateBlockSelector() {
+      const names = {
+        1: 'Chocolate Brick',
+        5: 'Cake Bread',
+        6: 'White Icing',
+        7: 'Strawberry'
+      };
+      document.getElementById('block-selector').textContent = 'Selected: ' + names[g_selectedBlock];
+    }
+
     renderScene();
     requestAnimationFrame(tick);
+}
+
+//add on - recipe game
+let g_recipeStep = 0;
+
+function checkRecipe() {
+
+    let breadCount = 0;
+    let icingCount = 0;
+    let strawberryCount = 0;
+
+    for (let x = 6; x <= 13; x++) {
+
+        for (let z = 17; z <= 24; z++) {
+
+            for (let y = 0; y < g_typeMap[x][z].length; y++) {
+
+                let t = g_typeMap[x][z][y];
+
+                if (t == 5) breadCount++;
+
+                if (t == 6) icingCount++;
+
+                if (t == 7) strawberryCount++;
+            }
+        }
+    }
+
+    console.log("Bread:", breadCount);
+    console.log("Icing:", icingCount);
+    console.log("Strawberry:", strawberryCount);
+
+    if (
+        breadCount >= 9 &&
+        icingCount >= 9 &&
+        strawberryCount >= 4
+    ) {
+        winGame();
+    }
+}
+
+function winGame() {
+    g_winAudio = new Audio('happy.mp3');
+    g_winAudio.play();
+    document.getElementById('win-message').style.display = 'block';
 }
