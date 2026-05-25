@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 4: Lighting, Jinho Kim</title>
+
+  <style>
+    body {
+      font-family: "Helvetica", Arial, sans-serif;
+      background-color: #f4f7fb;
+      margin: 20px;
+      color: #222;
+    }
+
+    .top-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    canvas {
+      border: 3px solid #d7e6ff;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      display: block;
+    }
+
+    .left-side {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-panel {
+      width: 597px;
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      line-height: 1.6;
+      box-sizing: border-box;
+    }
+
+    .info-panel h2 {
+      margin-top: 0;
+      color: #2d5fa8;
+    }
+
+    .info-section {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    .info-section:last-child {
+      border-bottom: none;
+    }
+
+    .info-section h3 {
+      color: #2d5fa8;
+      margin-bottom: 8px;
+    }
+
+    .controls-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      width: 420px;
+      margin-top: 0;
+    }
+
+    #fps-counter {
+      font-weight: bold;
+      color: #2d5fa8;
+      font-size: 18px;
+    }
+
+    #fps-counter-info {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2d5fa8;
+    }
+  </style>
+</head>
+
+<body onload="main()">
+
+  <!-- TOP SECTION: canvas+info on left, controls on right -->
+  <div class="top-section">
+
+    <!-- LEFT SIDE: canvas on top, info panel below -->
+    <div class="left-side">
+
+      <!-- canvas -->
+      <canvas id="asmt4-lighting" width="600" height="600" tabindex="0"></canvas>
+
+      <!-- FPS under canvas -->
+      <span id="fps-counter">FPS: --</span>
+
+      <!-- INFO PANEL below canvas -->
+      <div class="info-panel">
+
+        <h2>Assignment 4: Lighting ✨</h2>
+
+        <div class="info-section">
+          <b>Name:</b> Jinho Kim <br>
+          <b>Email:</b> jkim641@ucsc.edu
+        </div>
+
+        <div class="info-section">
+          <h3>Project Info 🎮</h3>
+          For this assignment, I used my Assignment 2: Blocky Animal to test lighting and shading effects. Most helps were from lab and professor's tutorial video, LLM, and used codes from Assignment 2 and Assignment 3.
+        </div>
+
+        <div class="info-section">
+          <h3>Controls 🎹</h3>
+          W A S D → Move Camera <br>
+          Q / E → Rotate Camera <br>
+          Mouse Drag → Camera Rotation <br>
+          Shift + Click → Special Animation
+        </div>
+
+        <div class="info-section">
+          <h3>Features 🌟</h3>
+          • Normal Visualization ON/OFF <br>
+          • Main Point Light ON/OFF (Yellow small cube)<br>
+          • Spotlight ON/OFF (Blue small cube)<br>
+          • Light Position <br>
+          • Light Colors <br>
+          • Camera Movement & Mouse Rotation <br>
+          • Animated Character Motion <br>
+          • OBJ Model
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE: controls panel -->
+    <div class="controls-panel">
+
+      <h3>Normal Visualization ✨:</h3>
+      <button type="button" id="normalOn">ON</button>
+      <button type="button" id="normalOff">OFF</button>
+
+      <br>
+
+      <h3>Light Switch 🔆:</h3>
+      <button id="lightOn">Light ON</button>
+      <button id="lightOff">Light OFF</button>
+
+      <br>
+
+      <h3>Light Direction 🧭:</h3>
+      Light X <input type="range" id="lightSlideX" min="-90" max="90" value="0"><br>
+      Light Y <input type="range" id="lightSlideY" min="-90" max="90" value="100"><br>
+      Light Z <input type="range" id="lightSlideZ" min="-90" max="90" value="200"><br>
+
+      <h3>Light Color 🎨:</h3>
+      <p>
+        Light Red
+        <input type="range" min="0" max="100" value="100" id="lightRed"><br>
+        Light Green
+        <input type="range" min="0" max="100" value="100" id="lightGreen"><br>
+        Light Blue
+        <input type="range" min="0" max="100" value="100" id="lightBlue">
+      </p>
+
+      <h3>Spotlight Switch 🔦:</h3>
+      <button id="spotLightOn">Spotlight ON</button>
+      <button id="spotLightOff">Spotlight OFF</button>
+
+      <br><br>
+
+      <b>----------------------------------------------------------------</b>
+
+      <h3>Animation On and OFF</h3>
+      <button type="button" id="yellowAniOn">ON</button>
+      <button type="button" id="yellowAniOff">OFF</button>
+
+      <br><br>
+
+      Note: Hold Shift + Click to View Special Animation
+
+      <div style="display: flex; gap: 40px; margin-top: 20px;">
+
+        <div>
+          <h3>Right Leg</h3>
+          Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegR"><br>
+          Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegR"><br>
+          Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetR"><br>
+        </div>
+
+        <div>
+          <h3>Left Leg</h3>
+          Upper <input type="range" min="-45" max="45" value="0" id="slideUpperLegL"><br>
+          Lower <input type="range" min="-45" max="45" value="0" id="slideLowerLegL"><br>
+          Feet  <input type="range" min="-45" max="45" value="0" id="slideFeetL"><br>
+        </div>
+
+      </div>
+
+      <div style="display: flex; gap: 40px; margin-top: 20px;">
+
+        <div>
+          <h3>Right Arm</h3>
+          Upper <input type="range" id="slideUpperArmR" min="-90" max="90" value="0"><br>
+          Lower <input type="range" id="slideLowerArmR" min="-90" max="90" value="0"><br>
+          Hand  <input type="range" id="slideHandR"     min="-90" max="90" value="0"><br>
+        </div>
+
+        <div>
+          <h3>Left Arm</h3>
+          Upper <input type="range" id="slideUpperArmL" min="-90" max="90" value="0"><br>
+          Lower <input type="range" id="slideLowerArmL" min="-90" max="90" value="0"><br>
+          Hand  <input type="range" id="slideHandL"     min="-90" max="90" value="0"><br>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="lib/webgl-utils.js"></script>
+  <script src="lib/webgl-debug.js"></script>
+  <script src="lib/cuon-utils.js"></script>
+  <script src="lib/cuon-matrix-cse160.js"></script>
+
+  <script src="OBJLoader.js"></script>
+  <script src="ObjMesh.js"></script>
+  <script src="asg4.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Circle.js"></script>
+  <script src="Cylinder.js"></script>
+  <script src="Pyramid.js"></script>
+  <script src="Camera.js"></script>
+  <script src="Sphere.js"></script>
+
+</body>
+
+</html>
