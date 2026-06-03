@@ -56,12 +56,12 @@ composer.addPass(outputPass);
 const skyTextureLoader = new THREE.CubeTextureLoader();
 
 const skybox = skyTextureLoader.load([
-    'textures/skybox/skyright.jpg',   // +X
-    'textures/skybox/skyleft.jpg',    // -X
-    'textures/skybox/skytop.jpg',     // +Y
-    'textures/skybox/skybottom.jpg',  // -Y
-    'textures/skybox/skyfront.jpg',   // +Z
-    'textures/skybox/skyback.jpg',    // -Z
+    'textures/skybox/skyright.JPG',   // +X
+    'textures/skybox/skyleft.JPG',    // -X
+    'textures/skybox/skytop.JPG',     // +Y
+    'textures/skybox/skybottom.JPG',  // -Y
+    'textures/skybox/skyfront.JPG',   // +Z
+    'textures/skybox/skyback.JPG',    // -Z
 ]);
 
 scene.background = skybox;
@@ -1626,14 +1626,14 @@ palm4Loader.load('textures/palm.obj', (object) => {
 //ice cream - https://www.cgtrader.com/items/5495829/download-page
 const mtlLoader = new MTLLoader();
 
-mtlLoader.load('textures/Icecream.mtl', (materials) => {
+mtlLoader.load('textures/icecream.mtl', (materials) => {
 
     materials.preload();
 
     const iceCreamLoader = new OBJLoader();
     iceCreamLoader.setMaterials(materials);
 
-    iceCreamLoader.load('textures/Icecream.obj', (object) => {
+    iceCreamLoader.load('textures/icecream.obj', (object) => {
 
         object.traverse((child) => {
             if (child.isMesh) {
