@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 5: Final (High Level Graphic), Jinho Kim</title>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #infoButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+
+      border: none;
+      border-radius: 10px;
+
+      padding: 12px 20px;
+
+      cursor: pointer;
+      z-index: 1000;
+
+      font-family: Arial, sans-serif;
+    }
+
+    #infoButton:hover {
+      background: rgba(0, 0, 0, 0.75);
+    }
+    
+    #infoPanel {
+      position: absolute;
+
+      top: 55px;
+      right: 15px;
+
+      width: 350px;
+
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+
+      padding: 20px;
+
+      border-radius: 12px;
+
+      display: none;
+
+      z-index: 1000;
+
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    #closeInfo {
+      position: absolute;
+
+      top: 10px;
+      right: 10px;
+
+      background: transparent;
+      color: white;
+
+      border: none;
+
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #infoPanel h2,
+    #infoPanel h3 {
+      margin-top: 0;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@v0.184.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.184.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <button id="infoButton">Info</button>
+
+  <div id="infoPanel">
+
+    <button id="closeInfo">✕</button>
+
+    <h2>Three.js Project</h2>
+
+    <p>
+      For Assignment 5, I created a Ice Cream Shop! I used a lot of helps from the three.js tutorial website, previous class assignments, and LLM. Addtionally, most of the obj models used in this project are from CGTrader and Free3D. All citation / refrences are in my README.md file(included in  zip file and github).
+    </p>
+
+    <h3>Controls and Perspective Project.</h3>
+
+    <ul>
+      <li>W-A-S-D : Move Around</li>
+      <li>Mouse Drag - Look Around</li>
+      <li>Mouse Wheel - Zoom</li>
+    </ul>
+
+    <h3>Features and WOW Point</h3>
+
+    <ul>
+      <li>Handmade Ice Cream Shop with more then 20 shapes.</li>
+      <li>Used primary shapes: Cube, Cone, Cylinder, Sphere, Alphabet.</li>
+      <li>Imported OBJ Models with MTL.</li>
+      <li>Many custom Textures.</li>
+      <li>Lightnings: Directional, Ambient, Hemisphere, Point, and Spot. </li>
+      <li>Animated Ice Cream Scoops and fireflies around.</li>
+      <li>Interactive Exploration: Click between the strawberry and chocolate!</li>
+    </ul>
+
+  </div>
+
+  <script type="module" src="asg5.js"></script>
+
+  <script>
+    const infoButton = document.getElementById("infoButton");
+    const infoPanel = document.getElementById("infoPanel");
+    const closeInfo = document.getElementById("closeInfo");
+
+    infoButton.addEventListener("click", () => {
+      infoPanel.style.display = "block";
+    });
+
+    closeInfo.addEventListener("click", () => {
+      infoPanel.style.display = "none";
+    });
+  </script>
+
+</body>
+
+</html>
