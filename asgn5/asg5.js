@@ -56,12 +56,12 @@ composer.addPass(outputPass);
 const skyTextureLoader = new THREE.CubeTextureLoader();
 
 const skybox = skyTextureLoader.load([
-    'textures/skybox/skyright.JPG',   // +X
-    'textures/skybox/skyleft.JPG',    // -X
-    'textures/skybox/skytop.JPG',     // +Y
-    'textures/skybox/skybottom.JPG',  // -Y
-    'textures/skybox/skyfront.JPG',   // +Z
-    'textures/skybox/skyback.JPG',    // -Z
+    'textures/skybox/skyright.jpg',   // +X
+    'textures/skybox/skyleft.jpg',    // -X
+    'textures/skybox/skytop.jpg',     // +Y
+    'textures/skybox/skybottom.jpg',  // -Y
+    'textures/skybox/skyfront.jpg',   // +Z
+    'textures/skybox/skyback.jpg',    // -Z
 ]);
 
 scene.background = skybox;
