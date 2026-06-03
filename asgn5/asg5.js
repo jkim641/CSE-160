@@ -25,7 +25,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 RectAreaLightUniformsLib.init();
 
@@ -79,6 +79,7 @@ let pitch = 0;
 const sensitivity = 0.009; 
 document.addEventListener('mousedown', (e) => {
     isMouseDown = true;
+    mouseMoved = false;
     lastMouseX = e.clientX;
     lastMouseY = e.clientY;
 });
