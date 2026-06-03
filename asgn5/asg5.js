@@ -71,6 +71,7 @@ scene.background = skybox;
 let isMouseDown = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
+let mouseMoved = false;
 
 let yaw = 0;
 let pitch = 0;
